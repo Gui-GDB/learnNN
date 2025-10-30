@@ -16,13 +16,13 @@ class LeNet(Module):
         self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
-        x = torch.relu(self.conv1(x))
+        x = torch.sigmoid(self.conv1(x))
         x = self.pool1(x)
-        x = torch.relu(self.conv2(x))
+        x = torch.sigmoid(self.conv2(x))
         x = self.pool2(x)
         x = self.flatten(x)
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
+        x = torch.sigmoid(self.fc1(x))
+        x = torch.sigmoid(self.fc2(x))
         x = self.fc3(x)
 
         return x

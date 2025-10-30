@@ -30,6 +30,16 @@ def get_data_MNIST(data_path, batch_size):
 
 def get_data_dog_and_cat(data_path, batch_size, img_size):
 	"""
+	Download the dataset from https://www.kaggle.com/datasets/fusicfenta/cat-and-dog?resource=download and organize the directory as follows:
+	 └─data
+		└─dog_and_cat
+			├─single_prediction
+			├─test_set
+			│  ├─cats
+			│  └─dogs
+			└─training_set
+				├─cats
+				└─dogs
 	获取 dog_and_cat 数据集，分为训练集和测试集使用
 	:param data_path: 数据集存放的路径
 	:param batch_size: 批处理的大小
