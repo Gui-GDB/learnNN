@@ -26,7 +26,7 @@
 
 ## ③ 模型结构——双层感知机
 
-<img src="img_md\双层感知机.png" style="zoom:33%;" />
+<img src="img_md\Double-layer perceptron.png" style="zoom:33%;" />
 
 ## ④ 模拟前向传播
 - 全连接的隐层计算：包含两个全连接：输入层 —— 隐藏层 & 隐藏层 —— 输出层
