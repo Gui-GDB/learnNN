@@ -22,7 +22,9 @@ def parse_args():
 	# 模型保存路径
 	parser.add_argument('--model_save_dir', type=str, default='./models', help='dir to save the model')
 	# 数据集名称
-	parser.add_argument('--dataset', type=str, default='dog_and_cat', help='Dataset name.')
+	parser.add_argument('--dataset', type=str, default='MNIST', help='Dataset name.')
+	# 数据集存放路径
+	parser.add_argument('--data_path', type=str, default='../data', help='Dataset name.')
 	# 图片统一尺寸大小
 	parser.add_argument('--img_size', type=int, default=64, help='setting dog_and_cat dataset image size.')
 	# 解析命令行参数
@@ -45,12 +47,12 @@ if __name__ == '__main__':
 	# 选择指定数据集进行训练
 	if args.dataset == 'MNIST':
 		# 获取数据加载器
-		train_loader, val_loader = utils.get_data_MNIST(args.batch_size)
+		train_loader, val_loader = utils.get_data_MNIST(args.data_path, args.batch_size)
 		# 初始化模型
 		model = MLP(input_dim=28 * 28, hid_dim1=512, hid_dim2=256, hid_dim3=128, output_dim=10, dropout=args.dropout)
 	elif args.dataset == 'dog_and_cat':
 		# 获取数据加载器
-		train_loader, val_loader = utils.get_data_dog_and_cat(args.batch_size, args.img_size)
+		train_loader, val_loader = utils.get_data_dog_and_cat(args.data_path, args.batch_size, args.img_size)
 		# 初始化模型
 		model = MLP(input_dim=3*args.img_size*args.img_size, hid_dim1=2048, hid_dim2=1024, hid_dim3=128, output_dim=2, dropout=args.dropout)
 	else:

@@ -3,9 +3,10 @@ from torchvision.transforms import transforms
 from torchvision.datasets import MNIST, ImageFolder
 
 
-def get_data_MNIST(batch_size):
+def get_data_MNIST(data_path, batch_size):
 	"""
 	获取 MNIST 数据集，分为训练集和测试集使用
+	:param data_path: 数据集存放的路径
 	:param batch_size: 批处理的大小
 	:return: 训练集和验证集加载器（DataLoader）
 	"""
@@ -17,9 +18,9 @@ def get_data_MNIST(batch_size):
 		transforms.Normalize((0.5,), (0.5,))
 	])
 	# 下载并加载训练集和测试集,train = True 加载训练集，否则加载测试集
-	train_dataset = MNIST(root='../data', train=True, download=True, transform=transform)
+	train_dataset = MNIST(root=data_path, train=True, download=True, transform=transform)
 	# 将这里的测试集，当作验证集使用
-	val_dataset = MNIST(root='../data', train=False, download=True, transform=transform)
+	val_dataset = MNIST(root=data_path, train=False, download=True, transform=transform)
 	# 创建数据加载器，用于加载数据集并将其分批次地传递给模型
 	train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 	val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
@@ -27,15 +28,16 @@ def get_data_MNIST(batch_size):
 	return train_loader, val_loader
 
 
-def get_data_dog_and_cat(batch_size, img_size):
+def get_data_dog_and_cat(data_path, batch_size, img_size):
 	"""
 	获取 dog_and_cat 数据集，分为训练集和测试集使用
+	:param data_path: 数据集存放的路径
 	:param batch_size: 批处理的大小
 	:param img_size: 图片统一的尺寸大小
 	:return: 训练集和验证集加载器（DataLoader）
 	"""
-	train_dir = '../data/dog_and_cat/training_set'
-	test_dir = '../data/dog_and_cat/test_set'
+	train_dir = data_path + '/dog_and_cat/training_set'
+	test_dir = data_path + '/dog_and_cat/test_set'
 
 	transform = transforms.Compose([
 		# 统一图片尺寸
@@ -55,4 +57,4 @@ def get_data_dog_and_cat(batch_size, img_size):
 
 
 if __name__ == '__main__':
-	get_data_MNIST(64)
+	get_data_MNIST('../data', 256)
