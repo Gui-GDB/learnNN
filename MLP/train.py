@@ -59,7 +59,8 @@ def train_and_evaluate(model, train_loader, val_loader, args):
 		# 保存验证集上表现最好的模型
 		if val_accuracy > best_val_acc:
 			best_val_acc = val_accuracy
-			torch.save(model.state_dict(), os.path.join(args.model_save_dir, "best_model.pth"))
+			model_name = str(args.dataset) + '_best_model.pth'
+			torch.save(model.state_dict(), os.path.join(args.model_save_dir, model_name))
 			print(f"Best model saved (Val Acc: {best_val_acc:.4f})")
 
 
