@@ -104,6 +104,51 @@ class RNN(nn.Module):
         return output
 
 
+class MyGRU(nn.Module):
+    def __init__(self, hidden_size):
+        super(MyGRU, self).__init__()
+        self.input_size = EMBEDDING_LENGTH
+        self.hidden_size = hidden_size
+
+        # 拼接输入 [h_{t-1}, x_t] → 各个门
+        self.linear_z = nn.Linear(hidden_size + EMBEDDING_LENGTH, hidden_size)
+        self.linear_r = nn.Linear(hidden_size + EMBEDDING_LENGTH, hidden_size)
+        self.linear_h = nn.Linear(hidden_size + EMBEDDING_LENGTH, hidden_size)
+
+        # 表示通过隐藏状态预测下一个字母的出现概率，因此这一层的输出通道是 EMBEDDING_LENGTH=27，即字符个数。
+        self.linear_y = nn.Linear(hidden_size, EMBEDDING_LENGTH)
+
+    def forward(self, word):
+        # word shape: [batch, max_word_length, embedding_length]
+        batch, Tx = word.shape[0:2]
+        # 我们循环遍历的其实是单词长度那一维。为了方便理解代码，我们可以把单词长度那一维转置成第一维。
+        # word shape: [max_word_length, batch,  embedding_length]
+        word = torch.transpose(word, 0, 1)
+        # 输出张量output[i][j]表示第j个batch的序列的第i个元素的27个字符预测结果。
+        # output shape: [max_word_length, batch,  embedding_length]
+        output = torch.empty_like(word)
+        # 初始化好隐变量 a 和第一轮的输入 x。
+        h_t = torch.zeros(batch, self.hidden_size, device=word.device)
+        x_t = torch.zeros(batch, EMBEDDING_LENGTH, device=word.device)
+        for i in range(Tx):
+            combined = torch.cat([h_t, x_t], dim=1)  # 拼接
+            z_t = torch.sigmoid(self.linear_z(combined))
+            r_t = torch.sigmoid(self.linear_r(combined))
+
+            # 对 r_t * h_{t-1} 与 x_t 再拼接
+            combined_candidate = torch.cat([r_t * h_t, x_t], dim=1)
+            h_tilde = torch.tanh(self.linear_h(combined_candidate))
+
+            h_t = (1 - z_t) * h_t + z_t * h_tilde
+            x_t = word[i]
+
+            hat_y = self.linear_y(h_t)
+            output[i] = hat_y
+
+        # output shape: [batch, max_word_length, embedding_length]
+        return torch.transpose(output, 0, 1)
+
+
 class RNN2(torch.nn.Module):
 
     def __init__(self, hidden_units=64, embedding_dim=64, dropout_rate=0.2):
